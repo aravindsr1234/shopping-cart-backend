@@ -14,6 +14,8 @@ connectDb();
 
 app.use('/', require('./server/routes/categoryRouter'));
 app.use('/user', require('./server/routes/userRouter'));
+app.use('/admin', require('./server/routes/adminRouter'));
+app.use('/cart', require('./server/routes/cartRouter'));
 
 const port = process.env.port || 8080;
 
