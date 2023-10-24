@@ -16,6 +16,9 @@ app.use('/', require('./server/routes/categoryRouter'));
 app.use('/user', require('./server/routes/userRouter'));
 app.use('/admin', require('./server/routes/adminRouter'));
 app.use('/cart', require('./server/routes/cartRouter'));
+app.use('/product', require('./server/routes/productRouter'));
+
+app.use(express.static("uploads"));  
 
 const port = process.env.port || 8080;
 
