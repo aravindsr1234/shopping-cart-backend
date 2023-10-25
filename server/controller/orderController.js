@@ -1,15 +1,15 @@
-const productdb = require('../model/product');
+const orderDb = require('../model/order');
 const newId = require('../functions/uid');
 
 exports.find = async (req, res) => {
     try {
         const id = req.query.id;
         if (id) {
-            const result = await productdb.findById(id);
+            const result = await orderDb.findById(id);
             res.status(200).json(result);
             return;
         }
-        const result = await productdb.find();
+        const result = await orderDb.find();
         res.status(200).json(result);
     } catch (err) {
         console.log(err);
@@ -19,19 +19,16 @@ exports.find = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const ID = newId("PR");
-        const mainImage = req.files[0] ? req.files[0].filename : '';
-        const imageArray = req.files.map((file) => file.filename);
+        const ID = newId("OR");
 
-        const product = await productdb.create({
-            productName: req.body.productName,
-            productId: ID,
-            categoryId: req.body.categoryId,
-            price: req.body.price,
-            image: mainImage,
-            images: imageArray,
-            description: req.body.description
-        })
+        const product = await orderDb.create({
+            orderId: ID,
+            productId: req.body.productId,
+            adminId: req.body.adminId,
+            totalPrice: req.body.totalPrice,
+            quantity: req.body.quantity,
+            orderDate: req.body.orderDate
+        });
 
         res.status(200).json(product);
     } catch (err) {
@@ -41,7 +38,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     const id = req.query.id;
-    const updateData = await productdb.findByIdAndUpdate(id, req.body, { new: true });
+    const updateData = await orderDb.findByIdAndUpdate(id, req.body, { new: true });
     console.log(updateData);
     res.status(200).json(updateData);
 }
@@ -49,7 +46,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const id = req.query.id;
-        await productdb.findByIdAndDelete(id)
+        await orderDb.findByIdAndDelete(id)
         res.status(200).json({ message: "User deleted successfully" });
     } catch (err) {
         res.status(500).json({ Error: "an internal error", err });
