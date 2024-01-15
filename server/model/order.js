@@ -1,14 +1,45 @@
 const mongoose = require('mongoose');
 
 const order = mongoose.Schema({
-    orderId: String,
-    productId: String,
+    // productId: String,
+    cartData: [],
+    userId: String,
     adminId: String,
     totalPrice: String,
     quantity: String,
-    orderDate: String
+    orderDate: String,
+    status: String,
 })
 
 const orderDb = mongoose.model('order', order);
-
 module.exports = orderDb;
+
+// 
+
+// const mongoose = require('mongoose');
+
+// const order = mongoose.Schema({
+//     userId: {
+//         type: String,
+//     },
+//     items: [{
+//         productId: {
+//             type: String,
+//         },
+//         name: String,
+//         quantity: {
+//             type: Number,
+//             required: true,
+//         },
+//         price: Number
+//     }],
+//     bill: {
+//         type: Number,
+//     },
+//     date_added: {
+//         type: Date,
+//         default: Date.now
+//     }
+// })
+
+// const orderDb = mongoose.model('order', order);

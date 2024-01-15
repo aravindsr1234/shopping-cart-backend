@@ -4,9 +4,9 @@ const key = process.env.Admin_Key;
 
 async function verifyAdmin(req, res, next) {
     const token = req.headers['authorization'];
-
+                
     if (!token) {
-        return res.status(400).json({ message: "" });
+        return res.status(400).json({ message: "LOGIN" });
     }
 
     jwt.verify(token, key, (error, decode) => {

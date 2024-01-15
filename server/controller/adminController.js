@@ -8,7 +8,9 @@ exports.find = async (req, res) => {
     try {
         const id = req.query.id;
         if (!id) {
-            res.status(400).json({ error: "missing user id in the request" });
+            const result = await adminDb.find();
+            console.log(result);
+            return res.status(200).json(result);
         }
         const result = await adminDb.findById(id);
 
@@ -29,7 +31,7 @@ exports.register = async (req, res) => {
         if (Object.keys(req.body).length === 0) {
             return res.status(400).json({ error: "Missing the user data" });
         }
-        const password =await bcrypt.hash(req.body.password, 10);
+        const password = await bcrypt.hash(req.body.password, 10);
         const admin = await adminDb.create({
             userName: req.body.userName,
             password: password,
@@ -55,7 +57,7 @@ exports.login = async (req, res) => {
         const admin = await adminDb.findOne({ userName });
 
         if (!admin) {
-            return res.status(404).json({ message: "no admin" }); 
+            return res.status(404).json({ message: "no admin" });
         }
 
         const passwordMatch = await bcrypt.compare(password, admin.password);
@@ -66,7 +68,7 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ userName: userName, password: password }, process.env.Admin_Key);
 
-        res.status(200).json({ token: token }); 
+        res.status(200).json({ token: token });
 
     } catch (error) {
         res.status(500).json(error);
