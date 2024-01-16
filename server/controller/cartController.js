@@ -100,3 +100,14 @@ exports.deleteFromCart = async (req, res) => {
         res.status(500).json(err);
     }
 }
+
+exports.deleteAllDataFromCart = async (req, res) => {
+    console.log('hello');
+    // try {
+    //     const result = await cartDb.deleteMany({});
+    //     res.status(200).json(result);
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).json(error);
+    // }
+}

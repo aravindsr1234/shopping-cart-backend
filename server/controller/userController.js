@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign({ user }, process.env.USER_key);
     console.log(token);
-    res.status(200).json({token, user});
+    res.status(200).json({ token, user });
 }
 
 exports.update = async (req, res) => {
