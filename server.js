@@ -25,7 +25,7 @@ app.use('/search', require('./server/routes/searchRouter'));
 app.use('/payment', require('./server/routes/paymentRouter'))
 app.use('/create-checkout-session', require('./server/routes/stripeRouter'));
 
-app.use('/uploads', express.static("uploads"));  
+app.use('/uploads', express.static("uploads"));
 
 const port = process.env.port || 8080;
 

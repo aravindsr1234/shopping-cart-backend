@@ -12,7 +12,7 @@ exports.find = async (req, res) => {
         } else {
             result = await categoryDb.find();
         }
-        console.log(result);
+        console.log("category result:", result);
         res.status(200).json(result);
     } catch (err) {
         console.log('error', err);
@@ -21,13 +21,14 @@ exports.find = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const image = req.file.path;
+        console.log("req.body", req.body.image);
+        // const image = req.file.path;
+        const image = req.body.image;
         const imageS = image.split('\\').pop();
         console.log(imageS);
-        console.log(req.body.category);
         const ctId = newId("Ct");
         var data = new categoryDb({
-            categoryName: req.body.category,
+            categoryName: req.body.categoryName,
             id: ctId,
             image: "http://localhost:4000/uploads/" + imageS,
         })
@@ -35,5 +36,34 @@ exports.create = async (req, res) => {
         data.save(data);
     } catch (err) {
         console.log(err);
+    }
+}
+
+exports.update = async (req, res) => {
+    try {
+        const id = req.query.id;
+        console.log(id);
+        console.log("update", req.body);
+        const image = req.file.path;
+        console.log("image", image);
+        const imageS = image.split('\\').pop();
+        console.log(imageS);
+        var data = {
+            categoryName: req.body.categoryName,
+            image: "http://localhost:4000/uploads/" + imageS,
+        }
+        console.log(data);
+        const updateData = await categoryDb.findByIdAndUpdate(id, data, { new: true });
+        console.log("updatedData", updateData);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.delete = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
     }
 }

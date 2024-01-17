@@ -8,6 +8,8 @@ const upload = multer({ storage: storage});
 
 route.get('/', controller.find);
 route.post('/', upload.single('image'),controller.create);
+route.put('/', upload.single('image'), controller.update);
+route.delete('/', controller.delete);
 
 module.exports = route ;
 
