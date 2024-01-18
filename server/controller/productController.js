@@ -20,6 +20,7 @@ exports.find = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const ID = newId("PR");
+        console.log('req.file', req.files);
         const mainImage = req.files[0] ? req.files[0].filename : '';
         const imageArray = req.files.map((file) => file.path);
         const imageArrays = imageArray.map((path) => path.split('\\').pop());
@@ -46,9 +47,24 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     const id = req.query.id;
     console.log("res from update ", id, req.body);
-    // const updateData = await productdb.findByIdAndUpdate(id, req.body, { new: true });
-    // console.log(updateData);
-    // res.status(200).json(updateData);
+    console.log('req.file', req.files);
+    const mainImage = req.files[0] ? req.files[0].filename : '';
+    const imageArray = req.files.map((file) => file.path);
+    const imageArrays = imageArray.map((path) => path.split('\\').pop());
+    console.log(imageArrays);
+    let data = {
+        productName: req.body.productName,
+        categoryId: req.body.categoryId,
+        quantity: req.body.quantity,
+        price: req.body.price,
+        image: mainImage,
+        images: imageArrays.map((path) => "http://localhost:4000/uploads/" + path),
+        description: req.body.description
+    }
+    console.log('data', data);
+    const updateData = await productdb.findByIdAndUpdate(id, data, { new: true });
+    console.log("updateData", updateData);
+    res.status(200).json(updateData);
 }
 
 exports.delete = async (req, res) => {

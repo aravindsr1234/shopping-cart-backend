@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const category = mongoose.Schema({
     categoryName : String,
     id : String,
+    delete: String,
     image: String
 });
 

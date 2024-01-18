@@ -10,7 +10,9 @@ exports.find = async (req, res) => {
             const ID = req.query.id;
             result = await categoryDb.findById(ID);
         } else {
-            result = await categoryDb.find();
+            result = await categoryDb.aggregate(
+                [{ $match: { delete: "notDelete" } }]
+            );
         }
         console.log("category result:", result);
         res.status(200).json(result);
@@ -21,9 +23,9 @@ exports.find = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        console.log("req.body", req.body.image);
-        // const image = req.file.path;
-        const image = req.body.image;
+        const image = req.file.path;
+        console.log('req.file', req.file.path);
+        // const image = req.body.image;
         const imageS = image.split('\\').pop();
         console.log(imageS);
         const ctId = newId("Ct");
@@ -31,6 +33,7 @@ exports.create = async (req, res) => {
             categoryName: req.body.categoryName,
             id: ctId,
             image: "http://localhost:4000/uploads/" + imageS,
+            delete: "notDelete"
         })
         console.log(data);
         data.save(data);
@@ -43,8 +46,9 @@ exports.update = async (req, res) => {
     try {
         const id = req.query.id;
         console.log(id);
-        console.log("update", req.body);
+        // console.log("update", req.body.categoryName);
         const image = req.file.path;
+        // const image = req.body.image;
         console.log("image", image);
         const imageS = image.split('\\').pop();
         console.log(imageS);
@@ -62,7 +66,15 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        
+        const id = req.query.id;
+        console.log('id', id);
+        console.log('req.body', req.body);
+        let data = {
+            delete: req.body.delete
+        }
+        console.log(data);
+        const updateData = await categoryDb.findByIdAndUpdate(id, data, { new: true });
+        console.log('updatedData', updateData);
     } catch (error) {
         console.log(error);
     }
