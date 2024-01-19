@@ -16,12 +16,8 @@ exports.find = async (req, res) => {
             console.log("data in order collection", data);
             res.status(200).json(data);
         }
-        // if (id) {
-        //     const result = await orderDb.findById(id);
-        //     res.status(200).json(result);
-        //     return;
-        // }
-        // const result = await orderDb.find();
+        const result = await orderDb.find();
+        res.status(200).json(result);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -64,7 +60,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     const id = req.query.id;
-    console.log("update data to this",req.body);
+    console.log("update data to this", req.body);
     const updateData = await orderDb.findByIdAndUpdate(id, req.body, { new: true });
     console.log(updateData);
     res.status(200).json(updateData);

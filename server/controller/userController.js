@@ -9,16 +9,14 @@ require('dotenv').config();
 exports.find = async (req, res) => {
     try {
         const id = req.query.id;
-        if (!id) {
-            res.status(400).json({ error: "missing user id in the request" });
-        }
-        const result = await userDb.findById(id);
-
-        if (result) {
+        if (id) {
+            const result = await userDb.findById(id);
             res.status(200).json(result);
-        } else {
-            res.status(404).json({ error: "user not found" });
+            return 0;
         }
+        const result = await userDb.find();
+        res.status(200).json(result);
+
     } catch (err) {
         console.log(err);
     }
