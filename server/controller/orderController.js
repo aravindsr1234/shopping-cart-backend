@@ -15,6 +15,7 @@ exports.find = async (req, res) => {
             const data = await orderDb.findById(id);
             console.log("data in order collection", data);
             res.status(200).json(data);
+            return;
         }
         const result = await orderDb.find();
         res.status(200).json(result);
@@ -22,6 +23,14 @@ exports.find = async (req, res) => {
         console.log(err);
         res.status(500).json(err);
     }
+};
+
+exports.findById = async (req, res) => {
+    const userId = req.query.id;
+    const result = await orderDb.aggregate(
+        [{ $match: { delete: `${userId}` } }]
+    );
+    console.log(result);
 }
 
 exports.create = async (req, res) => {

@@ -9,12 +9,15 @@ const order = mongoose.Schema({
     quantity: String,
     orderDate: String,
     status: String,
+    userName: String,
+    shippingAddress: {},
+    billingAddress: {},
 })
 
 const orderDb = mongoose.model('order', order);
 module.exports = orderDb;
 
-// 
+//
 
 // const mongoose = require('mongoose');
 

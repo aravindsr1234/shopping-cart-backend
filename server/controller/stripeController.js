@@ -6,10 +6,8 @@ const paymentCollection = require('../model/payment');
 
 exports.create = async (req, res) => {
     const dataItems = req.body;
-    // console.log(dataItems);
-    // console.log(dataItems.cartData.map((items) => items._id));
     const date = new Date();
-    console.log(date);  
+
     const order = await orderDb.create({
         cartData: req.body.cartData,
         userId: dataItems.userId,
@@ -17,7 +15,7 @@ exports.create = async (req, res) => {
         orderDate: date,
         status: 'pending'
     })
-    console.log("cart data in order page", order);
+
     const line_items = dataItems.cartData.map((item) => {
         return {
             price_data: {
@@ -46,12 +44,14 @@ exports.create = async (req, res) => {
             cancel_url: `${process.env.CLIENT_URL}/cart`,
         });
         console.log("session id for payment", session);
+
         const payment = await paymentCollection.create({
             paymentSessionId: session.id,
             orderId: order.id,
-        })
-        console.log("payment collection data",payment);
+        });
+
         res.send({ url: session.url });
+
     } catch (error) {
         console.log("error from stripe", error);
     }
@@ -60,4 +60,17 @@ exports.create = async (req, res) => {
 exports.find = async (req, res) => {
     const data = req.body;
     console.log(data);
-}
+};
+
+exports.update = async (req, res) => {
+    const id = req.query.id;
+    const { userName, shippingAddress, billingAddress } = req.body;
+    const data = {
+        userName,
+        shippingAddress,
+        billingAddress,
+    };
+    console.log('data', data);
+    const updatedData = await orderDb.findByIdAndUpdate(id, data, { new: true });
+    console.log("updated", updatedData);
+};
