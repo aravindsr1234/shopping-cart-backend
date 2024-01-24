@@ -27,10 +27,12 @@ exports.find = async (req, res) => {
 
 exports.findById = async (req, res) => {
     const userId = req.query.id;
+    console.log('userId', userId);
     const result = await orderDb.aggregate(
-        [{ $match: { delete: `${userId}` } }]
+        [{ $match: { userId: `${userId}` } }]
     );
     console.log(result);
+    res.status(200).json(result);
 }
 
 exports.create = async (req, res) => {
