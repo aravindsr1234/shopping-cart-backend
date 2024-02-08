@@ -86,3 +86,24 @@ exports.delete = async (req, res) => {
         res.status(500).json({ Error: "an internal error", err });
     }
 }
+
+exports.search = async (req, res) => {
+    try {
+        const query = req.query.search;
+        const result = await orderDb.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { userName: { $regex: query, $options: "i" } },
+                        { status: { $regex: query, $options: "i" } },
+                        // { price: { $gte: minPrice, $lte: maxPrice } }
+                    ]
+                }
+            },
+        ]);
+        res.status(200).json(result);
+
+    } catch (error) {
+        res.status(500).json({ error: "an internal error", error });
+    }
+}

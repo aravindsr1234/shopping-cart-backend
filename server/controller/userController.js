@@ -5,22 +5,79 @@ const { createPost } = require('../controller/cartController');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
+const mongoose = require('mongoose');
+
+// exports.find = async (req, res) => {
+//     try {
+//         const id = req.query.id;
+//         if (id) {
+//             const result = await userDb.findById(id);
+//             res.status(200).json(result);
+//             return 0;
+//         }
+//         const result = await userDb.find();
+//         res.status(200).json(result);
+
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
 
 exports.find = async (req, res) => {
     try {
-        const id = req.query.id;
-        if (id) {
-            const result = await userDb.findById(id);
-            res.status(200).json(result);
-            return 0;
-        }
-        const result = await userDb.find();
-        res.status(200).json(result);
+        console.log("query", req.query);
+        let { search } = req.query;
+        let page = parseInt(req.query.page) || 1;
+        let size = parseInt(req.query.size) || 5;
+        const limit = size;
+        const skip = (page - 1) * size;
 
-    } catch (err) {
-        console.log(err);
+        const pipeline = [];
+
+        const matchConditions = [
+            { firstName: { $regex: search, $options: 'i' } },
+            { lastName: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } },
+            { phone: { $regex: search, $options: 'i' } }
+        ];
+
+        if (mongoose.Types.ObjectId.isValid(search)) {
+            matchConditions.push({ _id: new mongoose.Types.ObjectId(search) });
+        }
+
+        if (search) {
+            pipeline.push({
+                $match: {
+                    $or: matchConditions
+                },
+            });
+        }
+
+        const facetStage = {
+            $facet: {
+                users: [
+                    ...pipeline,
+                    { $skip: skip },
+                    { $limit: limit },
+                ],
+                usersCount: [{ $count: 'totalCount' }],
+            },
+        };
+
+        pipeline.push(facetStage);
+
+        const result = await userDb.aggregate(pipeline).exec();
+
+        const { users, usersCount } = result[0];
+
+        res.status(200).json({ users, usersCount });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
+
 
 exports.create = async (req, res) => {
     try {
@@ -91,5 +148,25 @@ exports.delete = async (req, res) => {
         res.status(200).json({ message: "User deleted successfully" });
     } catch (err) {
         res.status(500).json({ Error: "an internal error", err });
+    }
+}
+
+exports.search = async (req, res) => {
+    try {
+        const result = await userDb.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { userName: { $regex: query, $options: "i" } },
+                        // { description: { $regex: query, $options: "i" } },
+                        // { price: { $gte: minPrice, $lte: maxPrice } }
+                    ]
+                }
+            },
+        ]);
+        console.log(result);
+
+    } catch (error) {
+        res.status(500).json({ error: "an internal error", error });
     }
 }

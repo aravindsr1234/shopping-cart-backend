@@ -4,6 +4,7 @@ const verifyUser = require('../functions/verify-user')
 const controller = require('../controller/userController');
 
 route.get('/', controller.find);
+route.get('/search', controller.search);
 route.post('/', controller.create);
 route.post('/login', controller.login);
 route.delete('/', controller.delete);
